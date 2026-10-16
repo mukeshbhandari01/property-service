@@ -1,0 +1,24 @@
+services:
+  property-service:
+    build: .
+    container_name: property-service
+    restart: unless-stopped
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+    expose:
+      - "8082"
+    networks:
+      - property-network
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - property-network
+
+networks:
+  property-network:
+    external: true
